@@ -95,11 +95,17 @@ export default function Dashboard({ user, onLogout }) {
   // ── Активация отложенных заявок ──────────────────────────────────────────
   const requestsRef = useRef(requests);
   requestsRef.current = requests;
+  const pushSubscribedUidRef = useRef(null);
 
   useEffect(() => {
     // Подписываем жильцов на push (охране не нужно — они отправляют, не получают)
     if (user.role === 'owner' || user.role === 'tenant' || user.role === 'contractor') {
-      subscribePush(user.uid);
+      if (pushSubscribedUidRef.current !== user.uid) {
+        pushSubscribedUidRef.current = user.uid;
+        subscribePush(user.uid);
+      }
+    } else {
+      pushSubscribedUidRef.current = null;
     }
     activateScheduled();
     const id = setInterval(() => {
