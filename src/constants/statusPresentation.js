@@ -15,6 +15,7 @@ export const REQUEST_STATUS_TONE = {
   accepted: 'accepted',
   arrived: 'arrived',
   scheduled: 'pending',
+  cancelled: 'rejected',
   expired: 'expired',
 };
 
