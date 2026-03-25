@@ -30,4 +30,14 @@ describe('normalizeValidationResult', () => {
     expect(normalizeValidationResult(undefined, { fallbackReason: 'not_found' }))
       .toEqual({ status: 'denied', reason: 'not_found' });
   });
+
+  test('fails closed for unknown status payload', () => {
+    expect(normalizeValidationResult({ status: 'weird' }))
+      .toEqual({ status: 'denied', reason: 'error' });
+  });
+
+  test('fills denied fallback reason when missing', () => {
+    expect(normalizeValidationResult({ status: 'denied' }))
+      .toEqual({ status: 'denied', reason: 'error' });
+  });
 });
