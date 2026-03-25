@@ -1,0 +1,20 @@
+import {
+  getValidationReasonLabel,
+  getStatusToneClass,
+} from './statusPresentation';
+
+describe('statusPresentation', () => {
+  test('maps known validation reasons to russian labels', () => {
+    expect(getValidationReasonLabel('expired')).toBe('Срок пропуска истёк');
+    expect(getValidationReasonLabel('manual_reject')).toBe('Ручной отказ охраной');
+  });
+
+  test('fallbacks to raw reason for unknown values', () => {
+    expect(getValidationReasonLabel('custom_reason')).toBe('custom_reason');
+  });
+
+  test('forces rejected tone when validation denied', () => {
+    expect(getStatusToneClass('approved', 'denied')).toBe('rejected');
+    expect(getStatusToneClass('approved', 'allowed')).toBe('approved');
+  });
+});
