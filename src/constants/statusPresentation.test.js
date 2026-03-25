@@ -17,4 +17,12 @@ describe('statusPresentation', () => {
     expect(getStatusToneClass('approved', 'denied')).toBe('rejected');
     expect(getStatusToneClass('approved', 'allowed')).toBe('approved');
   });
+
+  test('maps cancelled status to rejected tone', () => {
+    expect(getStatusToneClass('cancelled')).toBe('rejected');
+  });
+
+  test('falls back to pending tone for unknown status', () => {
+    expect(getStatusToneClass('mystery_status')).toBe('pending');
+  });
 });
