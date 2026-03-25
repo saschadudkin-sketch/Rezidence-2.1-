@@ -54,7 +54,7 @@ export function ScanQRModal({ user, onClose }) {
   const validateAndSetRequest = useCallback(async (found) => {
     // Отменённый пропуск — отклоняем сразу
     if (found.status === 'cancelled') {
-      setValidation({ valid: false, reason: 'cancelled', label: 'Пропуск отменён жильцом' });
+      setValidation({ status: 'denied', reason: 'cancelled' });
       setScannedReq(found);
       return;
     }
@@ -67,7 +67,7 @@ export function ScanQRModal({ user, onClose }) {
     try {
       result = await validatePass(passPayload, { blacklist });
     } catch(e) {
-      result = { valid: false, reason: 'error', label: 'Ошибка проверки пропуска' };
+      result = { status: 'denied', reason: 'error' };
     }
     setValidation(result);
     if (result.status === 'denied') {

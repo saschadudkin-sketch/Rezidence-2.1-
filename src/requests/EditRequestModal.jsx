@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useActions } from '../store/AppStore.jsx';
 import { CAT_ICON, CAT_LABEL } from '../constants/index.js';
 import { toastBySyncResult } from '../ui/syncFeedback';
+import { toast } from '../ui/Toasts.jsx';
 import { lockScroll, unlockScroll } from '../ui/scrollLock.js';
 import { services } from '../services/providers/serviceContainer';
 
@@ -33,6 +34,9 @@ export function EditRequestModal({ req, onClose, onDone }) {
       toastBySyncResult(mode, 'Заявка обновлена', 'Изменения сохранены локально. Синхронизация будет повторена позже');
       onDone();
       onClose();
+    } catch (e) {
+      console.warn('[EditRequestModal] save failed:', e);
+      toast('Не удалось сохранить изменения', 'error');
     } finally {
       setLoading(false);
     }
