@@ -5,6 +5,7 @@ import { parsePassQR } from '../services/qrService';
 import { validatePass, logVisit } from '../shared/api/passesApi';
 import { CAT_LABEL, STS_LABEL } from '../constants/index.js';
 import { getValidationReasonLabel, getStatusToneClass } from '../constants/statusPresentation';
+import { normalizeValidationResult } from '../domain/validationResult';
 import { lockScroll, unlockScroll } from '../ui/scrollLock.js';
 import { toast } from '../ui/Toasts.jsx';
 
@@ -54,7 +55,7 @@ export function ScanQRModal({ user, onClose }) {
   const validateAndSetRequest = useCallback(async (found) => {
     // Отменённый пропуск — отклоняем сразу
     if (found.status === 'cancelled') {
-      setValidation({ status: 'denied', reason: 'cancelled' });
+      setValidation(normalizeValidationResult({ status: 'denied', reason: 'cancelled' }));
       setScannedReq(found);
       return;
     }
@@ -69,14 +70,15 @@ export function ScanQRModal({ user, onClose }) {
     } catch(e) {
       result = { status: 'denied', reason: 'error' };
     }
-    setValidation(result);
-    if (result.status === 'denied') {
+    const normalized = normalizeValidationResult(result);
+    setValidation(normalized);
+    if (normalized.status === 'denied') {
       await logVisit({
         userId: passPayload.userId,
         requestId: found.id,
         timestamp: new Date().toISOString(),
         result: 'denied',
-        reason: result.reason,
+        reason: normalized.reason,
         actorName: user.name,
         actorRole: user.role,
         visitorName: found.visitorName || null,
