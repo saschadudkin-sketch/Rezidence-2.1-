@@ -1,4 +1,4 @@
-import { canApproveScannedRequest } from './scanDecision';
+import { canApproveScannedRequest, getScanDecision } from './scanDecision';
 
 describe('canApproveScannedRequest', () => {
   test('allows pending request only for allowed validation', () => {
@@ -15,5 +15,12 @@ describe('canApproveScannedRequest', () => {
     expect(canApproveScannedRequest({ requestStatus: 'cancelled', validationStatus: 'allowed' })).toBe(false);
     expect(canApproveScannedRequest({ requestStatus: 'rejected', validationStatus: 'allowed' })).toBe(false);
   });
-});
 
+  test('returns combined scan decision payload', () => {
+    expect(getScanDecision({ requestStatus: 'pending', validationStatus: 'allowed' }))
+      .toEqual({ deniedByValidation: false, canApprove: true });
+
+    expect(getScanDecision({ requestStatus: 'pending', validationStatus: 'denied' }))
+      .toEqual({ deniedByValidation: true, canApprove: false });
+  });
+});

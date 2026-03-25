@@ -3,3 +3,9 @@ export function canApproveScannedRequest({ requestStatus, validationStatus }) {
   return requestStatus === 'pending' || requestStatus === 'approved';
 }
 
+export function getScanDecision({ requestStatus, validationStatus }) {
+  return {
+    deniedByValidation: validationStatus === 'denied',
+    canApprove: canApproveScannedRequest({ requestStatus, validationStatus }),
+  };
+}

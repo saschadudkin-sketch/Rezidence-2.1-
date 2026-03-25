@@ -6,7 +6,7 @@ import { validatePass, logVisit } from '../shared/api/passesApi';
 import { CAT_LABEL, STS_LABEL } from '../constants/index.js';
 import { getValidationReasonLabel, getStatusToneClass } from '../constants/statusPresentation';
 import { normalizeValidationResult } from '../domain/validationResult';
-import { canApproveScannedRequest } from '../domain/scanDecision';
+import { getScanDecision } from '../domain/scanDecision';
 import { lockScroll, unlockScroll } from '../ui/scrollLock.js';
 import { toast } from '../ui/Toasts.jsx';
 
@@ -179,6 +179,15 @@ export function ScanQRModal({ user, onClose }) {
   };
 
   const handleApprove = async () => {
+    const decision = getScanDecision({
+      requestStatus: scannedReq?.status,
+      validationStatus: validation?.status,
+    });
+    if (!decision.canApprove) {
+      toast('Допуск недоступен для этого пропуска', 'error');
+      return;
+    }
+
     if (scannedReq.status === 'pending') {
       const dur = scannedReq.passDuration || 'once';
       if (dur === 'once') {
@@ -236,9 +245,8 @@ export function ScanQRModal({ user, onClose }) {
     onClose();
   };
 
-  const deniedByValidation = validation?.status === 'denied';
-  const canApprove = scannedReq && canApproveScannedRequest({
-    requestStatus: scannedReq.status,
+  const { deniedByValidation, canApprove } = getScanDecision({
+    requestStatus: scannedReq?.status,
     validationStatus: validation?.status,
   });
   const actionLabel = scannedReq?.status === 'approved' ? 'Отметить вход' : 'Пропустить';
