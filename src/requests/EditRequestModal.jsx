@@ -28,10 +28,14 @@ export function EditRequestModal({ req, onClose, onDone }) {
       carPlate:     carPlate.trim() || null,
       comment:      comment.trim(),
     };
-    try { const mode = await services.requests.updateEverywhere({ requestId: req.id, patch, updateLocal: updateRequest });
-    setLoading(false);
-    toastBySyncResult(mode, 'Заявка обновлена', 'Изменения сохранены локально. Синхронизация будет повторена позже');
-    onDone(); onClose();
+    try {
+      const mode = await services.requests.updateEverywhere({ requestId: req.id, patch, updateLocal: updateRequest });
+      toastBySyncResult(mode, 'Заявка обновлена', 'Изменения сохранены локально. Синхронизация будет повторена позже');
+      onDone();
+      onClose();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const needsPlate = ['taxi', 'car', 'master', 'delivery'].includes(req.category);

@@ -15,6 +15,7 @@ import { ConciergeView, SecurityView } from './SecurityConciergeViews';
 import { LOGO } from '../constants/logo';
 import { isLiveMode, isDemoMode } from '../config/runtimeMode';
 import { services } from '../services/providers/serviceContainer';
+import { subscribePush } from '../services/pushNotification';
 
 const AdminView = lazy(() => import('./AdminView'));
 
@@ -105,7 +106,7 @@ export default function Dashboard({ user, onLogout }) {
       if (requestsRef.current.some(r => r.status === 'scheduled')) activateScheduled();
     }, 30000);
     return () => clearInterval(id);
-  }, [activateScheduled]);
+  }, [activateScheduled, user.role, user.uid]);
 
   // ── PWA App Badge ─────────────────────────────────────────────────────────
   useEffect(() => {

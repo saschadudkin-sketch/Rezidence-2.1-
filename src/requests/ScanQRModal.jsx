@@ -55,8 +55,7 @@ export function ScanQRModal({ user, onClose }) {
     // Отменённый пропуск — отклоняем сразу
     if (found.status === 'cancelled') {
       setValidation({ valid: false, reason: 'cancelled', label: 'Пропуск отменён жильцом' });
-      setRequest(found);
-      setPhase('result');
+      setScannedReq(found);
       return;
     }
     const passPayload = {
