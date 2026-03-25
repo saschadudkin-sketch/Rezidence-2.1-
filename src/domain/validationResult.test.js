@@ -20,5 +20,14 @@ describe('normalizeValidationResult', () => {
     expect(normalizeValidationResult(null))
       .toEqual({ status: 'denied', reason: 'error' });
   });
-});
 
+  test('fills default allowed reason when missing', () => {
+    expect(normalizeValidationResult({ status: 'allowed' }))
+      .toEqual({ status: 'allowed', reason: 'ok' });
+  });
+
+  test('uses custom fallback reason for invalid payload', () => {
+    expect(normalizeValidationResult(undefined, { fallbackReason: 'not_found' }))
+      .toEqual({ status: 'denied', reason: 'not_found' });
+  });
+});
