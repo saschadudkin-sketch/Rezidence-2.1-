@@ -23,4 +23,9 @@ describe('canApproveScannedRequest', () => {
     expect(getScanDecision({ requestStatus: 'pending', validationStatus: 'denied' }))
       .toEqual({ deniedByValidation: true, canApprove: false });
   });
+
+  test('returns safe defaults for missing request status', () => {
+    expect(getScanDecision({ requestStatus: undefined, validationStatus: 'allowed' }))
+      .toEqual({ deniedByValidation: false, canApprove: false });
+  });
 });
