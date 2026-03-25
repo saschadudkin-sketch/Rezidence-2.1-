@@ -6,6 +6,7 @@ import { validatePass, logVisit } from '../shared/api/passesApi';
 import { CAT_LABEL, STS_LABEL } from '../constants/index.js';
 import { getValidationReasonLabel, getStatusToneClass } from '../constants/statusPresentation';
 import { normalizeValidationResult } from '../domain/validationResult';
+import { canApproveScannedRequest } from '../domain/scanDecision';
 import { lockScroll, unlockScroll } from '../ui/scrollLock.js';
 import { toast } from '../ui/Toasts.jsx';
 
@@ -236,7 +237,10 @@ export function ScanQRModal({ user, onClose }) {
   };
 
   const deniedByValidation = validation?.status === 'denied';
-  const canApprove = scannedReq && !deniedByValidation && (scannedReq.status === 'pending' || scannedReq.status === 'approved');
+  const canApprove = scannedReq && canApproveScannedRequest({
+    requestStatus: scannedReq.status,
+    validationStatus: validation?.status,
+  });
   const actionLabel = scannedReq?.status === 'approved' ? 'Отметить вход' : 'Пропустить';
   const validationReason = getValidationReasonLabel(validation?.reason);
 
